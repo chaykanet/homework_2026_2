@@ -89,21 +89,21 @@ QUnit.module("Тестируем функцию deepMerge", function() {
             value: {
                 a: 1
             }
-        }
+        };
 
         const target = {
             value: 52
-        }
+        };
 
         const expected = {
             value: 52
-        }
+        };
 
         const result = deepMerge(source, target);
         assert.deepEqual(result, expected, "Должно заменять исходный объект примитивом из target");
     });
 
-    QUnit.test("Заменяет исходный примитив значением из target", function(assert) { 
+    QUnit.test("Заменяет исходный примитив значением из target", function(assert) {
         const source = {
             value: 1
         };
@@ -113,7 +113,7 @@ QUnit.module("Тестируем функцию deepMerge", function() {
                 a: 52
             }
         };
- 
+
         const expected = {
             value: {
                 a: 52
@@ -174,12 +174,12 @@ QUnit.module("Тестируем функцию deepMerge", function() {
 
         const expected = {
             value: [4, 5]
-        }
+        };
 
         const result = deepMerge(source, target);
         assert.deepEqual(result, expected, "Должно заменять исходный массив массивом из target");
     });
-    
+
     QUnit.test("Пустой массив из target заменяет непустой массив source", function(assert) {
         const source = {
             value: [1, 2, 3]
@@ -194,7 +194,7 @@ QUnit.module("Тестируем функцию deepMerge", function() {
         };
 
         const result = deepMerge(source, target);
-        assert.deepEqual(result, expected,"Должно заменять исходный массив пустым массивом из target");
+        assert.deepEqual(result, expected, "Должно заменять исходный массив пустым массивом из target");
     });
 
     QUnit.test("Непустой массив из target заменяет пустой массив source", function(assert) {
@@ -213,7 +213,6 @@ QUnit.module("Тестируем функцию deepMerge", function() {
         const result = deepMerge(source, target);
         assert.deepEqual(result, expected, "Должно заменять пустой исходный массив массивом из target");
     });
-
 
     QUnit.test("Вложенность объектов больше 2 уровней", function(assert) {
         const source = {
@@ -249,5 +248,65 @@ QUnit.module("Тестируем функцию deepMerge", function() {
 
         const result = deepMerge(source, target);
         assert.deepEqual(result, expected, "Должно корректно работать с объектами, вложенными более чем на 2 уровня");
-        });
     });
+
+    QUnit.test("Выбрасывает ошибку, если первый аргумент является строкой", function(assert) {
+        assert.throws(
+            function() {
+                deepMerge("abc", {});
+            },
+            TypeError,
+            "Должно выбрасывать TypeError для строки вместо объекта"
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку, если второй аргумент является строкой", function(assert) {
+        assert.throws(
+            function() {
+                deepMerge({}, "abc");
+            },
+            TypeError,
+            "Должно выбрасывать TypeError для строки вместо объекта"
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку, если аргумент является числом", function(assert) {
+        assert.throws(
+            function() {
+                deepMerge({}, 52);
+            },
+            TypeError,
+            "Должно выбрасывать TypeError для числа вместо объекта"
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку, если аргумент равен null", function(assert) {
+        assert.throws(
+            function() {
+                deepMerge({}, null);
+            },
+            TypeError,
+            "Должно выбрасывать TypeError для null вместо объекта"
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку, если аргумент является undefined", function(assert) {
+        assert.throws(
+            function() {
+                deepMerge({}, undefined);
+            },
+            TypeError,
+            "Должно выбрасывать TypeError для undefined вместо объекта"
+        );
+    });
+
+    QUnit.test("Выбрасывает ошибку, если аргумент является массивом", function(assert) {
+        assert.throws(
+            function() {
+                deepMerge({}, [1, 2, 3]);
+            },
+            TypeError,
+            "Должно выбрасывать TypeError для массива вместо объекта"
+        );
+    });
+});
