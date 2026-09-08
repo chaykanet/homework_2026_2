@@ -65,7 +65,6 @@ const deepMerge = (object1, object2) => {
 
     for (const [key, value2] of Object.entries(object2)) {
         const value1 = result[key];
-
         if (isObject(value1) && isObject(value2)) {
             result[key] = deepMerge(value1, value2);
         } else {

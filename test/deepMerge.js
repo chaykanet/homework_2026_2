@@ -309,4 +309,27 @@ QUnit.module("Тестируем функцию deepMerge", function() {
             "Должно выбрасывать TypeError для массива вместо объекта"
         );
     });
+
+    QUnit.test("Не добавляют унаследованные свойства из target", function(assert) {
+
+        const source = {
+            value: 1
+        };
+
+        const target = Object.create({
+            inretired: 2
+        });
+
+        target.own = 3;
+
+        const expected = {
+            value: 1,
+            own: 3
+        };
+
+        const result = deepMerge(source, target);
+
+        assert.deepEqual(result, expected, "Должно объединять собственные свойства target"
+        );
+    });
 });
