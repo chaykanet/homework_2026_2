@@ -80,4 +80,174 @@ QUnit.module("Тестируем функцию deepMerge", function() {
         const result = deepMerge(source, target);
         assert.deepEqual(result, expected, "Должно возвращать исходный объект при отсутствии второго");
     });
-});
+
+    // Из-за неоднозначности формулировки условия предполагается,
+    // что если только одно из значений является объектом,
+    // значение из target перезаписывает значение из source.
+    QUnit.test("Заменяет исходный объект примитивом из target", function(assert) {
+        const source = {
+            value: {
+                a: 1
+            }
+        }
+
+        const target = {
+            value: 52
+        }
+
+        const expected = {
+            value: 52
+        }
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected, "Должно заменять исходный объект примитивом из target");
+    });
+
+    QUnit.test("Заменяет исходный примитив значением из target", function(assert) { 
+        const source = {
+            value: 1
+        };
+
+        const target = {
+            value: {
+                a: 52
+            }
+        };
+ 
+        const expected = {
+            value: {
+                a: 52
+            }
+        };
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected, "Должно заменять исходный примитив значением из target");
+    });
+
+    QUnit.test("Работает правильно с null в target", function(assert) {
+        const source = {
+            value: {
+                a: 1
+            }
+        };
+
+        const target = {
+            value: null
+        };
+
+        const expected = {
+            value: null
+        };
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected, "Должно заменять исходный объект значением null из target");
+    });
+
+    QUnit.test("Работает правильно с пустым target", function(assert) {
+        const source = {
+            value: 1
+        };
+
+        const expected = {
+            value: 1
+        };
+
+        const result = deepMerge(source, {});
+
+        assert.deepEqual(result, expected, "Должно возвращать исходные значения при пустом target");
+    });
+
+    QUnit.test("Работает правильно с двумя пустыми объектами", function(assert) {
+        const result = deepMerge({}, {});
+
+        assert.deepEqual(result, {}, "Должно возвращать пустой объект при отсутствии обоих объектов");
+    });
+
+    QUnit.test("Заменяет исходный массив массивом из target", function(assert) {
+        const source = {
+            value: [1, 2, 3]
+        };
+
+        const target = {
+            value: [4, 5]
+        };
+
+        const expected = {
+            value: [4, 5]
+        }
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected, "Должно заменять исходный массив массивом из target");
+    });
+    
+    QUnit.test("Пустой массив из target заменяет непустой массив source", function(assert) {
+        const source = {
+            value: [1, 2, 3]
+        };
+
+        const target = {
+            value: []
+        };
+
+        const expected = {
+            value: []
+        };
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected,"Должно заменять исходный массив пустым массивом из target");
+    });
+
+    QUnit.test("Непустой массив из target заменяет пустой массив source", function(assert) {
+        const source = {
+            value: []
+        };
+
+        const target = {
+            value: [1, 2, 3]
+        };
+
+        const expected = {
+            value: [1, 2, 3]
+        };
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected, "Должно заменять пустой исходный массив массивом из target");
+    });
+
+
+    QUnit.test("Вложенность объектов больше 2 уровней", function(assert) {
+        const source = {
+            level1: {
+                level2: {
+                    level3: {
+                        a: 1
+                    }
+                }
+            }
+        };
+
+        const target = {
+            level1: {
+                level2: {
+                    level3: {
+                        b: 2
+                    }
+                }
+            }
+        };
+
+        const expected = {
+            level1: {
+                level2: {
+                    level3: {
+                        a: 1,
+                        b: 2
+                    }
+                }
+            }
+        };
+
+        const result = deepMerge(source, target);
+        assert.deepEqual(result, expected, "Должно корректно работать с объектами, вложенными более чем на 2 уровня");
+        });
+    });
